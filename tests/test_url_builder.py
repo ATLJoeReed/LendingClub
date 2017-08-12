@@ -16,3 +16,8 @@ def test_url_builer_2():
 def test_url_builer_3():
     url = utils.url_builder('loans_owned', test_account_number)
     assert url == 'https://api.lendingclub.com/api/investor/v1/accounts/1234567890/notes' # noqa
+
+
+def test_url_builer_4():
+    url = utils.url_builder('place_order', test_account_number)
+    assert url == 'https://api.lendingclub.com/api/investor/v1/accounts/1234567890/orders' # noqa

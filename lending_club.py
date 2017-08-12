@@ -2,6 +2,9 @@ from config import settings
 import utils
 
 
+logger = utils.setup_logger('lending_clug', 'lending_club.log')
+
+
 for account in settings.ACCOUNTS:
 
     account_number = account['account_number']

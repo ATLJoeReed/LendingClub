@@ -1,3 +1,4 @@
+import logging
 import math
 
 import requests
@@ -15,6 +16,11 @@ def url_builder(url_type, account_number=None):
         url = settings.GET_LOAN_URL.format(settings.CURRENT_VERSION)
     elif url_type == 'loans_owned':
         url = settings.GET_LOANS_OWNED_URL.format(
+            settings.CURRENT_VERSION,
+            account_number
+        )
+    elif url_type == 'place_order':
+        url = settings.PLACE_ORDER_URL.format(
             settings.CURRENT_VERSION,
             account_number
         )
@@ -97,3 +103,15 @@ def loans_owned_getter(headers, account_number):
 
 def order_placer(loan_id, cash_amount):
     pass
+
+
+def setup_logger(logger_name, log_file_name):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.INFO)
+    fh = logging.FileHandler(log_file_name)
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    return logger
