@@ -1,10 +1,38 @@
 import math
 
-from config import scores
+import requests
+
+from config import scores, settings
+
+
+def url_builder(url_type, account_number=None):
+    if url_type == 'account_details':
+        url = settings.GET_ACCOUNT_DETAILS_URL.format(
+            settings.CURRENT_VERSION,
+            account_number
+        )
+    elif url_type == 'get_loans':
+        url = settings.GET_LOAN_URL.format(settings.CURRENT_VERSION)
+    elif url_type == 'loans_owned':
+        url = settings.GET_LOANS_OWNED_URL.format(
+            settings.CURRENT_VERSION,
+            account_number
+        )
+    else:
+        url = None
+
+    return url
+
+
+def header_builder(authorization_token):
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+    headers['Authorization'] = authorization_token
+    headers['Accept'] = 'application/json'
+    return headers
 
 
 def loan_scorer(loan_details):
-
     score = scores.BASE
 
     home_ownership_score = scores.HOME_OWNERSHIP_SCORES.get(
@@ -24,3 +52,48 @@ def loan_scorer(loan_details):
     score += verification_score
 
     return 1 / (1 + math.exp(score))
+
+
+def get_loans(headers, loan_grade, min_probability_score):
+    results = []
+    url = url_builder('get_loans')
+    r = requests.get(url, headers=headers)
+    response = r.json()
+    loans = response['loans']
+
+    print("Total loans located: {}".format(len(loans)))
+
+    for loan in loans:
+        if loan['grade'] in loan_grade:
+            score = loan_scorer(loan)
+            if score >= min_probability_score:
+                acceptable_loan = {}
+                acceptable_loan['id'] = loan['id']
+                acceptable_loan['term'] = loan['term']
+                acceptable_loan['grade'] = loan['grade']
+                acceptable_loan['score'] = round(score, 4)
+                results.append(acceptable_loan)
+    return results
+
+
+def available_cash_getter(headers, account_number):
+    url = url_builder('account_details', account_number)
+    r = requests.get(url, headers=headers)
+    response = r.json()
+    available_cash = response['availableCash']
+    return available_cash
+
+
+def loans_owned_getter(headers, account_number):
+    results = []
+    url = url_builder('account_details', account_number)
+    r = requests.get(url, headers=headers)
+    response = r.json()
+    notes = response.get('myNotes', [])
+    for note in notes:
+        results.append(note['loanId'])
+    return results
+
+
+def order_placer(loan_id, cash_amount):
+    pass

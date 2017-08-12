@@ -1,29 +1,43 @@
-import requests
-
 from config import settings
 import utils
 
 
-r = requests.get(
-    settings.GET_LOAN_URL,
-    headers=settings.HEADERS
-)
+for account in settings.ACCOUNTS:
 
-response = r.json()
+    account_number = account['account_number']
+    authorization_token = account['authorization_token']
+    loan_grades = account['loan_grades']
+    min_probability_score = account['min_probability_score']
+    max_loan_invest = account['max_loan_invest']
 
-loans = response['loans']
+    headers = utils.header_builder(authorization_token)
 
-print("Total loans located: {}".format(len(loans)))
+    available_cash = utils.available_cash_getter(
+        headers,
+        account_number
+    )
 
-for loan in loans:
-    if loan['grade'] in ['F', 'G']:  # and loan['term'] == 36:
-        score = utils.loan_scorer(loan)
-        print(
-            "LoanID: {} - Term: {} - Grade: {} - "
-            "Probablilty to fully pay: {}".format(
-                loan['id'],
-                loan['term'],
-                loan['grade'],
-                round(score, 4)
-            )
+    loans_owned = utils.loans_owned_getter(headers, account_number)
+
+    loans = utils. get_loans(
+        headers,
+        loan_grades,
+        min_probability_score
+    )
+
+    print("Available Cash Balance :${}".format(available_cash))
+
+    new_loans = [l for l in loans if l not in loans_owned]
+    payload = {}
+    payload['aid'] = account_number
+    payload['orders'] = []
+    for loan in new_loans:
+        print(loan)
+        payload['orders'].append(
+            {
+                'loanId': loan['id'],
+                'requestedAmount': max_loan_invest
+            }
         )
+
+    print(payload)
