@@ -4,6 +4,7 @@ import utils
 
 logger = utils.setup_logger('lending_clug', 'lending_club.log')
 
+logger.info("=========================NEW RUN=========================")
 
 for account in settings.ACCOUNTS:
 
@@ -15,27 +16,41 @@ for account in settings.ACCOUNTS:
 
     headers = utils.header_builder(authorization_token)
 
-    available_cash = utils.available_cash_getter(
-        headers,
-        account_number
-    )
+    try:
+        available_cash = utils.available_cash_getter(
+            headers,
+            account_number
+        )
+    except Exception as e:
+        logger.error("Getting available cash: {}".format(e))
+        raise SystemExit
 
-    loans_owned = utils.loans_owned_getter(headers, account_number)
+    try:
+        loans_owned = utils.loans_owned_getter(headers, account_number)
+    except Exception as e:
+        logger.error("Getting loans owned: {}".format(e))
+        raise SystemExit
 
-    loans = utils. get_loans(
-        headers,
-        loan_grades,
-        min_probability_score
-    )
+    try:
+        loans = utils. get_loans(
+            headers,
+            loan_grades,
+            min_probability_score,
+            logger
+        )
+    except Exception as e:
+        logger.error("Getting all open loans: {}".format(e))
+        raise SystemExit
 
-    print("Available Cash Balance :${}".format(available_cash))
+    logger.info("Available Cash Balance :${}".format(available_cash))
 
     new_loans = [l for l in loans if l not in loans_owned]
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []
     for loan in new_loans:
-        print(loan)
+        logger.info("Loan found:{}".format(loan))
+
         payload['orders'].append(
             {
                 'loanId': loan['id'],

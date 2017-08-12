@@ -60,14 +60,14 @@ def loan_scorer(loan_details):
     return 1 / (1 + math.exp(score))
 
 
-def get_loans(headers, loan_grade, min_probability_score):
+def get_loans(headers, loan_grade, min_probability_score, logger):
     results = []
     url = url_builder('get_loans')
     r = requests.get(url, headers=headers)
     response = r.json()
     loans = response['loans']
 
-    print("Total loans located: {}".format(len(loans)))
+    logger.info("Total loans located: {}".format(len(loans)))
 
     for loan in loans:
         if loan['grade'] in loan_grade:
