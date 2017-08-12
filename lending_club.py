@@ -17,19 +17,19 @@ for account in settings.ACCOUNTS:
     headers = utils.header_builder(authorization_token)
 
     try:
-        available_cash = utils.available_cash_getter(
-            headers,
-            account_number
-        )
+        available_cash = utils.available_cash_getter(headers, account_number)
     except Exception as e:
         logger.error("Getting available cash: {}".format(e))
-        raise SystemExit
+        break
 
     try:
         loans_owned = utils.loans_owned_getter(headers, account_number)
     except Exception as e:
         logger.error("Getting loans owned: {}".format(e))
-        raise SystemExit
+        break
+
+    if loans_owned:
+        logger.info("Loans owned: {}".format(loans_owned))
 
     try:
         loans = utils. get_loans(
@@ -39,12 +39,16 @@ for account in settings.ACCOUNTS:
             logger
         )
     except Exception as e:
-        logger.error("Getting all open loans: {}".format(e))
-        raise SystemExit
+        logger.error("Getting scored loans: {}".format(e))
+        break
 
     logger.info("Available Cash Balance :${}".format(available_cash))
 
     new_loans = [l for l in loans if l not in loans_owned]
+    if not new_loans:
+        logger.info("No scored loans found...")
+        break
+
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []
@@ -60,7 +64,12 @@ for account in settings.ACCOUNTS:
 
     logger.info("Payload: {}".format(payload))
 
-    order_results = utils.order_placer(headers, account_number, payload)
+    try:
+        order_results = utils.order_placer(headers, account_number, payload)
+    except Exception as e:
+        logger.error("Placing order: {}".format(e))
+        break
+
     logger.info("Order results: {}".format(order_results))
 
 logger.info("==========================END RUN==========================")
