@@ -101,8 +101,11 @@ def loans_owned_getter(headers, account_number):
     return results
 
 
-def order_placer(loan_id, cash_amount):
-    pass
+def order_placer(headers, account_number, payload):
+    url = url_builder('place_order', account_number)
+    r = requests.post(url, headers=headers, json=payload)
+    response = r.json()
+    return response
 
 
 def setup_logger(logger_name, log_file_name):

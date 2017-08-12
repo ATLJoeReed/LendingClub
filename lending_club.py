@@ -4,7 +4,7 @@ import utils
 
 logger = utils.setup_logger('lending_clug', 'lending_club.log')
 
-logger.info("=========================NEW RUN=========================")
+logger.info("=========================START RUN=========================")
 
 for account in settings.ACCOUNTS:
 
@@ -49,7 +49,7 @@ for account in settings.ACCOUNTS:
     payload['aid'] = account_number
     payload['orders'] = []
     for loan in new_loans:
-        logger.info("Loan found:{}".format(loan))
+        logger.info("Loan found: {}".format(loan))
 
         payload['orders'].append(
             {
@@ -58,4 +58,9 @@ for account in settings.ACCOUNTS:
             }
         )
 
-    print(payload)
+    logger.info("Payload: {}".format(payload))
+
+    order_results = utils.order_placer(headers, account_number, payload)
+    logger.info("Order results: {}".format(order_results))
+
+logger.info("==========================END RUN==========================")
