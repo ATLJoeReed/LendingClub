@@ -38,7 +38,7 @@ def runner(preview=True):
             logger.info("You do not have enough available cash...")
             break
 
-        time.sleep(.750)
+        time.sleep(.500)
 
         try:
             loans_owned = utils.loans_owned_getter(headers, account_number)
@@ -49,7 +49,7 @@ def runner(preview=True):
         if loans_owned:
             logger.info("Loans owned: {}".format(loans_owned))
 
-        time.sleep(.750)
+        time.sleep(.500)
 
         try:
             loans = utils. get_loans(
