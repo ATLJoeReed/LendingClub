@@ -76,7 +76,7 @@ def loan_scorer(loan_details):
 
 def loans_owned_getter(headers, account_number):
     results = []
-    url = url_builder('account_details', account_number)
+    url = url_builder('loans_owned', account_number)
     r = requests.get(url, headers=headers)
     response = r.json()
     notes = response.get('myNotes', [])
