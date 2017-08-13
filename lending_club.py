@@ -18,7 +18,6 @@ def runner(preview=True):
         authorization_token = account['authorization_token']
         loan_grades = account['loan_grades']
         min_probability_score = account['min_probability_score']
-        max_loan_invest = account['max_loan_invest']
 
         headers = utils.header_builder(authorization_token)
 
@@ -33,23 +32,13 @@ def runner(preview=True):
         except Exception as e:
             logger.error("Getting available cash: {}".format(e))
             break
+
         logger.info("Available Cash Balance :${}".format(available_cash))
-        if not available_cash:
-            logger.info("You have no available cash...")
+        if available_cash < 50:
+            logger.info("You do not have enough available cash...")
             break
 
-        time.sleep(1)
-
-        max_number_loans = utils.get_max_number_loans(
-            available_cash,
-            max_loan_invest
-        )
-        logger.info(
-            "Max number of loans to invest in: {}".format(max_number_loans)
-        )
-        if not max_number_loans:
-            logger.info("You do not have enough available cash to place and order...") # noqa
-            break
+        time.sleep(.750)
 
         try:
             loans_owned = utils.loans_owned_getter(headers, account_number)
@@ -60,7 +49,7 @@ def runner(preview=True):
         if loans_owned:
             logger.info("Loans owned: {}".format(loans_owned))
 
-        time.sleep(1)
+        time.sleep(.750)
 
         try:
             loans = utils. get_loans(
@@ -73,27 +62,43 @@ def runner(preview=True):
             logger.error("Getting scored loans: {}".format(e))
             break
 
-        new_loans = [l for l in loans if l not in loans_owned]
-        if not new_loans:
+        if not loans:
             logger.info("No scored loans found...")
             break
 
-        time.sleep(1)
+        new_loans = [l for l in loans if l not in loans_owned]
+        if not new_loans:
+            logger.info("No scored loans (not owned) found...")
+            break
 
         payload = {}
         payload['aid'] = account_number
         payload['orders'] = []
-        for loan in new_loans[:max_number_loans]:
+        for loan in new_loans:
             logger.info("Loan found: {}".format(loan))
-
-            payload['orders'].append(
-                {
-                    'loanId': loan['id'],
-                    'requestedAmount': max_loan_invest
-                }
+            investment_amount = utils.get_investment_amount(
+                loan['score'],
+                available_cash
             )
+            logger.info("Investment amount: ${}".format(investment_amount))
+
+            if investment_amount > settings.MAX_INVESTMENT_AMOUNT:
+                logger.error("Investment amount above maximum amount...")
+                investment_amount = 50
+
+            if investment_amount:
+                payload['orders'].append(
+                    {
+                        'loanId': loan['id'],
+                        'requestedAmount': investment_amount
+                    }
+                )
+            else:
+                break
+            available_cash -= investment_amount
 
         logger.info("Payload: {}".format(payload))
+        logger.info("Avaiable cash left: ${}".format(available_cash))
 
         if not preview:
             try:

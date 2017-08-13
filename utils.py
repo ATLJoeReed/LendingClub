@@ -16,6 +16,27 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
+def get_investment_amount(score, available_cash):
+    results = 0
+    if available_cash < 50:
+        return results
+    if score < .65:
+        return results
+    if score >= .65 and score < .80:
+        return 50
+    if score >= .80 and score < .90:
+        if available_cash >= 100:
+            return 100
+        else:
+            return available_cash
+    if score >= .90:
+        if available_cash >= 150:
+            return 150
+        else:
+            return available_cash
+    return results
+
+
 def get_loans(headers, loan_grade, min_probability_score, logger):
     results = []
     scored_loans = []
@@ -43,10 +64,6 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
             reverse=True
         )
     return results
-
-
-def get_max_number_loans(available_cash, max_loan_invest):
-    return int(math.floor(available_cash / max_loan_invest))
 
 
 def header_builder(authorization_token):
