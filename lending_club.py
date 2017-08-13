@@ -1,4 +1,5 @@
 #!/usr/bin/python3.6
+import argparse
 import os
 
 from config import settings
@@ -108,8 +109,16 @@ if __name__ == '__main__':
     dname = os.path.dirname(abspath)
     os.chdir(dname)
 
-    # Once we go live we will change preview to False...
-    preview = True
-    # preview = False
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-l", "--live",
+        help="start placing orders",
+        action="store_true"
+    )
+    args = parser.parse_args()
+    if args.live:
+        preview = False
+    else:
+        preview = True
 
     runner(preview)
