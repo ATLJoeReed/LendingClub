@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import logging
+from operator import itemgetter
 import math
 
 import requests
@@ -16,7 +17,7 @@ def available_cash_getter(headers, account_number):
 
 
 def get_loans(headers, loan_grade, min_probability_score, logger):
-    results = []
+    scored_loans = []
     url = url_builder('get_loans')
     r = requests.get(url, headers=headers)
     response = r.json()
@@ -33,7 +34,14 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
                 acceptable_loan['term'] = loan['term']
                 acceptable_loan['grade'] = loan['grade']
                 acceptable_loan['score'] = round(score, 4)
-                results.append(acceptable_loan)
+                scored_loans.append(acceptable_loan)
+    if scored_loans:
+        results = sorted(
+            scored_loans,
+            key=itemgetter('score'),
+            reverse=True
+        )
+
     return results
 
 
