@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 import os
 
 from config import settings
 import utils
 
 
-def runner(preview):
+def runner(preview=True):
     logger = utils.setup_logger('lending_clug', 'lending_club.log')
 
     logger.info("=========================START RUN=========================") # noqa
@@ -108,9 +108,8 @@ if __name__ == '__main__':
     dname = os.path.dirname(abspath)
     os.chdir(dname)
 
-    # ===================
+    # Once we go live we will change preview to False...
     preview = True
     # preview = False
-    # ===================
 
     runner(preview)

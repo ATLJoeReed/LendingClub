@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 import utils
 
 test_authorization_token = 'abcdefghijk1234567890'
