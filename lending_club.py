@@ -1,6 +1,7 @@
 #!/usr/bin/python3.6
 import argparse
 import os
+import time
 
 from config import settings
 import utils
@@ -37,6 +38,8 @@ def runner(preview=True):
             logger.info("You have no available cash...")
             break
 
+        time.sleep(1)
+
         max_number_loans = utils.get_max_number_loans(
             available_cash,
             max_loan_invest
@@ -57,6 +60,8 @@ def runner(preview=True):
         if loans_owned:
             logger.info("Loans owned: {}".format(loans_owned))
 
+        time.sleep(1)
+
         try:
             loans = utils. get_loans(
                 headers,
@@ -72,6 +77,8 @@ def runner(preview=True):
         if not new_loans:
             logger.info("No scored loans found...")
             break
+
+        time.sleep(1)
 
         payload = {}
         payload['aid'] = account_number
