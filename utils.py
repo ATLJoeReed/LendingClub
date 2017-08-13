@@ -17,6 +17,7 @@ def available_cash_getter(headers, account_number):
 
 
 def get_loans(headers, loan_grade, min_probability_score, logger):
+    results = []
     scored_loans = []
     url = url_builder('get_loans')
     r = requests.get(url, headers=headers)

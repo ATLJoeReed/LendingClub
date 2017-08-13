@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import argparse
 import os
 
 from config import settings
@@ -32,6 +31,10 @@ def runner(preview):
         except Exception as e:
             logger.error("Getting available cash: {}".format(e))
             break
+        logger.info("Available Cash Balance :${}".format(available_cash))
+        if not available_cash:
+            logger.info("You have no available cash...")
+            break
 
         max_number_loans = utils.get_max_number_loans(
             available_cash,
@@ -40,6 +43,9 @@ def runner(preview):
         logger.info(
             "Max number of loans to invest in: {}".format(max_number_loans)
         )
+        if not max_number_loans:
+            logger.info("You do not have enough available cash to place and order...") # noqa
+            break
 
         try:
             loans_owned = utils.loans_owned_getter(headers, account_number)
@@ -61,8 +67,6 @@ def runner(preview):
             logger.error("Getting scored loans: {}".format(e))
             break
 
-        logger.info("Available Cash Balance :${}".format(available_cash))
-
         new_loans = [l for l in loans if l not in loans_owned]
         if not new_loans:
             logger.info("No scored loans found...")
@@ -83,7 +87,7 @@ def runner(preview):
 
         logger.info("Payload: {}".format(payload))
 
-        if preview == 'no':
+        if not preview:
             try:
                 order_results = utils.order_placer(
                     headers,
@@ -100,19 +104,13 @@ def runner(preview):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--preview",
-        help="run process without placing orders"
-    )
-    args = parser.parse_args()
-    if args.preview == '1':
-        preview = 'yes'
-    else:
-        preview = 'no'
-
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
     os.chdir(dname)
+
+    # ===================
+    preview = True
+    # preview = False
+    # ===================
 
     runner(preview)
