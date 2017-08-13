@@ -7,7 +7,7 @@ import utils
 
 
 def runner(preview=True):
-    logger = utils.setup_logger('lending_clug', 'lending_club.log')
+    logger = utils.setup_logger('lending_club', 'lending_club.log')
 
     logger.info("=========================START RUN=========================") # noqa
 
