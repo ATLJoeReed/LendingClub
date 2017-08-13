@@ -45,3 +45,13 @@ def test_get_investment_amount_8():
 def test_get_investment_amount_9():
     results = utils.get_investment_amount(.845, 49)
     assert results == 0
+
+
+def test_get_investment_amount_10():
+    results = utils.get_investment_amount(.845, 95)
+    assert results == 95
+
+
+def test_get_investment_amount_11():
+    results = utils.get_investment_amount(.9, 145)
+    assert results == 145
