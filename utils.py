@@ -41,8 +41,11 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
             key=itemgetter('score'),
             reverse=True
         )
-
     return results
+
+
+def get_max_number_loans(available_cash, max_loan_invest):
+    return math.floor(available_cash / max_loan_invest)
 
 
 def header_builder(authorization_token):

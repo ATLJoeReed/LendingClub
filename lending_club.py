@@ -33,6 +33,14 @@ def runner(preview):
             logger.error("Getting available cash: {}".format(e))
             break
 
+        max_number_loans = utils.get_max_number_loans(
+            available_cash,
+            max_loan_invest
+        )
+        logger.info(
+            "Max number of loans to invest in: {}".format(max_number_loans)
+        )
+
         try:
             loans_owned = utils.loans_owned_getter(headers, account_number)
         except Exception as e:
@@ -63,7 +71,7 @@ def runner(preview):
         payload = {}
         payload['aid'] = account_number
         payload['orders'] = []
-        for loan in new_loans:
+        for loan in new_loans[:max_number_loans]:
             logger.info("Loan found: {}".format(loan))
 
             payload['orders'].append(
