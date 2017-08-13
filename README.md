@@ -14,6 +14,7 @@ This will run the process and show you loans that match the specified criteria a
 
 # Live Mode
 python lending_club.py -l
+
 python lending_club.py --live
 
 Either of the above will run the process and place orders that match your specified criteria.
