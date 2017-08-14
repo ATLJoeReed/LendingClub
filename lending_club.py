@@ -13,7 +13,6 @@ def runner(preview=True):
     logger.info("=========================START RUN=========================") # noqa
 
     for account in settings.ACCOUNTS:
-
         account_number = account['account_number']
         authorization_token = account['authorization_token']
         loan_grades = account['loan_grades']
@@ -21,7 +20,10 @@ def runner(preview=True):
 
         headers = utils.header_builder(authorization_token)
 
-        logger.info("Processing orders for account: {}".format(account_number))
+        logger.info(
+            "***Processing orders for account: {}"
+            .format(account_number)
+        )
         logger.info("Preview mode: {}".format(preview))
 
         try:
@@ -31,12 +33,12 @@ def runner(preview=True):
             )
         except Exception as e:
             logger.error("Getting available cash: {}".format(e))
-            break
+            continue
 
         logger.info("Available Cash Balance :${}".format(available_cash))
         if available_cash < 50:
-            logger.info("You do not have enough available cash...")
-            break
+            logger.info("Not enough available cash...")
+            continue
 
         time.sleep(.500)
 
@@ -44,10 +46,7 @@ def runner(preview=True):
             loans_owned = utils.loans_owned_getter(headers, account_number)
         except Exception as e:
             logger.error("Getting loans owned: {}".format(e))
-            break
-
-        if loans_owned:
-            logger.info("Loans owned: {}".format(loans_owned))
+            continue
 
         time.sleep(.500)
 
@@ -60,16 +59,16 @@ def runner(preview=True):
             )
         except Exception as e:
             logger.error("Getting scored loans: {}".format(e))
-            break
+            continue
 
         if not loans:
             logger.info("No scored loans found...")
-            break
+            continue
 
         new_loans = [l for l in loans if l not in loans_owned]
         if not new_loans:
             logger.info("No scored loans (not owned) found...")
-            break
+            continue
 
         payload = {}
         payload['aid'] = account_number
@@ -109,7 +108,7 @@ def runner(preview=True):
                 )
             except Exception as e:
                 logger.error("Placing order: {}".format(e))
-                break
+                continue
 
             logger.info("Order results: {}".format(order_results))
 
