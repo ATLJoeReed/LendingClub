@@ -21,7 +21,7 @@ def runner(preview=True):
         headers = utils.header_builder(authorization_token)
 
         logger.info(
-            "***Processing orders for account: {}"
+            "    Processing orders for account: {}"
             .format(account_number)
         )
         logger.info("Preview mode: {}".format(preview))
