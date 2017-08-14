@@ -43,7 +43,7 @@ def runner(preview=True):
         time.sleep(.500)
 
         try:
-            loans_owned = utils.loans_owned_getter(headers, account_number)
+            loans_owned = utils.get_loans_owned(headers, account_number)
         except Exception as e:
             logger.error("Getting loans owned: {}".format(e))
             continue
@@ -65,7 +65,8 @@ def runner(preview=True):
             logger.info("No scored loans found...")
             continue
 
-        new_loans = [l for l in loans if l not in loans_owned]
+        new_loans = [l for l in loans if l['id'] not in loans_owned]
+
         if not new_loans:
             logger.info("No scored loans (not owned) found...")
             continue

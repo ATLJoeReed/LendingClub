@@ -66,6 +66,17 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
     return results
 
 
+def get_loans_owned(headers, account_number):
+    results = []
+    url = url_builder('loans_owned', account_number)
+    r = requests.get(url, headers=headers)
+    response = r.json()
+    notes = response.get('myNotes', [])
+    for note in notes:
+        results.append(note['loanId'])
+    return results
+
+
 def header_builder(authorization_token):
     headers = {}
     headers['Content-Type'] = 'application/json'
@@ -89,17 +100,6 @@ def loan_scorer(loan_details):
     score += home_ownership_score
     score += verification_score
     return 1 / (1 + math.exp(score))
-
-
-def loans_owned_getter(headers, account_number):
-    results = []
-    url = url_builder('loans_owned', account_number)
-    r = requests.get(url, headers=headers)
-    response = r.json()
-    notes = response.get('myNotes', [])
-    for note in notes:
-        results.append(note['loanId'])
-    return results
 
 
 def order_placer(headers, account_number, payload):
