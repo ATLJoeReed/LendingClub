@@ -133,7 +133,8 @@ if __name__ == '__main__':
     else:
         preview = True
 
-    seconds_to_sleep = utils.get_seconds_to_sleep()
-    time.sleep(seconds_to_sleep)
+    if not preview:
+        seconds_to_sleep = utils.get_seconds_to_sleep()
+        time.sleep(seconds_to_sleep)
 
     runner(preview)
