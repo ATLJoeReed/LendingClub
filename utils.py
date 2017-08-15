@@ -1,4 +1,5 @@
 #!/usr/bin/python3.6
+import datetime
 import logging
 from operator import itemgetter
 import math
@@ -64,6 +65,17 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
             reverse=True
         )
     return results
+
+
+def get_seconds_to_sleep():
+    now = datetime.datetime.now()
+    top_hour = now.replace(
+        hour = now.hour + 1,
+        minute = 0,
+        second=2,
+        microsecond=500
+    )
+    return (top_hour - now).seconds
 
 
 def get_loans_owned(headers, account_number):
