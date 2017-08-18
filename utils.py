@@ -70,8 +70,8 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
 def get_seconds_to_sleep():
     now = datetime.datetime.now()
     top_hour = now.replace(
-        hour = now.hour + 1,
-        minute = 0,
+        hour=now.hour + 1,
+        minute=0,
         second=2,
         microsecond=500
     )
@@ -98,20 +98,26 @@ def header_builder(authorization_token):
 
 
 def loan_scorer(loan_details):
-    score = scores.BASE
-    home_ownership_score = scores.HOME_OWNERSHIP_SCORES.get(
+    results = {}
+    score_identifier = loan_details['grade'] + '_' + str(loan_details['term'])
+    score_model = scores.SCORES[score_identifier]
+    score = score_model['base']
+    home_ownership_score = score_model['home_ownership_scores'].get(
         loan_details['homeOwnership'], 0
     )
-    verification_score = scores.VERIFICATION_SCORES.get(
+    verification_score = score_model['verification_scores'].get(
         loan_details['isIncV'], 0
     )
-    for k in scores.LOAN_ATTRIBUTE_WEIGHTS:
-        score += loan_details[k] * scores.LOAN_ATTRIBUTE_WEIGHTS.get(
+    for k in score_model['loan_attribute_weights']:
+        score += loan_details[k] * score_model['loan_attribute_weights'].get(
             k, 0
         )
     score += home_ownership_score
     score += verification_score
-    return 1 / (1 + math.exp(score))
+    results['score'] = 1 / (1 + math.exp(score))
+    results['min_probability_score'] = score_model['min_probability_score']
+    results['max_investment_amount'] = score_model['max_investment_amount']
+    return results
 
 
 def order_placer(headers, account_number, payload):
