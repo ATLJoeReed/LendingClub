@@ -17,28 +17,32 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
-def get_investment_amount(score, available_cash):
+def get_investment_amount(
+        grade, term, score, available_cash, max_investment_amount):
     results = 0
     if available_cash < 50:
         return results
-    if score < .65:
-        return results
-    if score >= .65 and score < .80:
-        return 50
-    if score >= .80 and score < .90:
-        if available_cash >= 100:
-            return 100
-        else:
-            return available_cash
-    if score >= .90:
-        if available_cash >= 150:
-            return 150
-        else:
-            return available_cash
+    if grade in ['F', 'G']:
+        if score < .65:
+            return results
+        if score >= .65 and score < .80:
+            return 50
+        if score >= .80 and score < .90:
+            if available_cash >= 100:
+                return 100
+            else:
+                return available_cash
+        if score >= .90:
+            if available_cash >= 150:
+                return 150
+            else:
+                return available_cash
+    else:
+        return max_investment_amount
     return results
 
 
-def get_loans(headers, loan_grade, min_probability_score, logger):
+def get_loans(headers, logger):
     results = []
     scored_loans = []
     url = url_builder('get_loans')
@@ -49,21 +53,23 @@ def get_loans(headers, loan_grade, min_probability_score, logger):
     logger.info("Total loans located: {}".format(len(loans)))
 
     for loan in loans:
-        if loan['grade'] in loan_grade:
-            score = loan_scorer(loan)
-            if score >= min_probability_score:
+        if loan['grade'] in ['A', 'B', 'F', 'G']:
+            scored_results = loan_scorer(loan)
+            if scored_results['score'] >= scored_results['min_probability_score']:
                 acceptable_loan = {}
                 acceptable_loan['id'] = loan['id']
                 acceptable_loan['term'] = loan['term']
                 acceptable_loan['grade'] = loan['grade']
-                acceptable_loan['score'] = round(score, 4)
+                acceptable_loan['score'] = round(scored_results['score'], 4)
+                acceptable_loan['max_investment_amount'] = \
+                    scored_results['max_investment_amount']
                 scored_loans.append(acceptable_loan)
-    if scored_loans:
-        results = sorted(
-            scored_loans,
-            key=itemgetter('score'),
-            reverse=True
-        )
+        if scored_loans:
+            results = sorted(
+                scored_loans,
+                key=itemgetter('score'),
+                reverse=True
+            )
     return results
 
 

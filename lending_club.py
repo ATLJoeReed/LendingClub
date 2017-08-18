@@ -15,8 +15,6 @@ def runner(preview=True):
     for account in settings.ACCOUNTS:
         account_number = account['account_number']
         authorization_token = account['authorization_token']
-        loan_grades = account['loan_grades']
-        min_probability_score = account['min_probability_score']
 
         headers = utils.header_builder(authorization_token)
 
@@ -51,10 +49,8 @@ def runner(preview=True):
         time.sleep(.500)
 
         try:
-            loans = utils. get_loans(
+            loans = utils.get_loans(
                 headers,
-                loan_grades,
-                min_probability_score,
                 logger
             )
         except Exception as e:
@@ -77,12 +73,15 @@ def runner(preview=True):
         for loan in new_loans:
             logger.info("Loan found: {}".format(loan))
             investment_amount = utils.get_investment_amount(
+                loan['grade'],
+                loan['term'],
                 loan['score'],
-                available_cash
+                available_cash,
+                loan['max_investment_amount']
             )
             logger.info("Investment amount: ${}".format(investment_amount))
 
-            if investment_amount > settings.MAX_INVESTMENT_AMOUNT:
+            if investment_amount > loan['max_investment_amount']:
                 logger.error("Investment amount above maximum amount...")
                 investment_amount = 50
 
