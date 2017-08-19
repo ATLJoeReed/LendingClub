@@ -178,6 +178,50 @@ def test_loan_scorer_B_60_3():
     assert round(results['score'], 10) == round(0.0, 10)
 
 
+def test_loan_scorer_E_36_1():
+    loan_details = {
+        'id': 102324952,
+        'term': 36,
+        'grade': 'E',
+        'annualInc': 45000.0,
+        'collections12MthsExMed': 0,
+        'dti': 30.93,
+        'ficoRangeLow': 665,
+        'inqLast6Mths': 0,
+        'installment': 647.26,
+        'loanAmount': 16500.0,
+        'openAcc': 9,
+        'pubRec': 1,
+        'totalAcc': 21,
+        'homeOwnership': 'RENT',
+        'isIncV': 'VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.535662091446566, 10)
+
+
+def test_loan_scorer_E_36_2():
+    loan_details = {
+        'id': 103752965,
+        'term': 36,
+        'grade': 'E',
+        'annualInc': 21000.0,
+        'collections12MthsExMed': 0,
+        'dti': 6.97,
+        'ficoRangeLow': 660,
+        'inqLast6Mths': 1,
+        'installment': 198.12,
+        'loanAmount': 5000.0,
+        'openAcc': 4,
+        'pubRec': 0,
+        'totalAcc': 25,
+        'homeOwnership': 'RENT',
+        'isIncV': 'VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.762876206380062, 10)
+
+
 def test_loan_scorer_F_60_1():
     loan_details = {
         'id': 104043925,
