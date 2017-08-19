@@ -17,8 +17,7 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
-def get_investment_amount(
-        grade, term, score, available_cash, max_investment_amount):
+def get_investment_amount(grade, term, score, available_cash, max_investment_amount): # noqa
     results = 0
     if available_cash < 50:
         return results
@@ -49,13 +48,11 @@ def get_loans(headers, logger):
     r = requests.get(url, headers=headers)
     response = r.json()
     loans = response['loans']
-
     logger.info("Total loans located: {}".format(len(loans)))
-
     for loan in loans:
-        if loan['grade'] in ['A', 'B', 'F', 'G']:
+        if loan['grade'] in settings.LOAN_GRADES:
             scored_results = loan_scorer(loan)
-            if scored_results['score'] >= scored_results['min_probability_score']:
+            if scored_results['score'] >= scored_results['min_probability_score']: # noqa
                 acceptable_loan = {}
                 acceptable_loan['id'] = loan['id']
                 acceptable_loan['term'] = loan['term']
@@ -123,6 +120,8 @@ def loan_scorer(loan_details):
     results['score'] = 1 / (1 + math.exp(score))
     results['min_probability_score'] = score_model['min_probability_score']
     results['max_investment_amount'] = score_model['max_investment_amount']
+    if loan_details['homeOwnership'] not in list(score_model['home_ownership_scores']): # noqa
+        results['score'] = 0
     return results
 
 
