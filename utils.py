@@ -17,7 +17,7 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
-def get_investment_amount(grade, term, score, available_cash, max_investment_amount): # noqa
+def get_investment_amount(grade, score, available_cash, max_investment_amount, min_probability_score): # noqa
     results = 0
     if available_cash < 50:
         return results
@@ -37,7 +37,13 @@ def get_investment_amount(grade, term, score, available_cash, max_investment_amo
             else:
                 return available_cash
     else:
-        return max_investment_amount
+        if score >= min_probability_score:
+            if available_cash >= max_investment_amount:
+                return max_investment_amount
+            else:
+                return available_cash
+        else:
+            return results
     return results
 
 
@@ -60,11 +66,13 @@ def get_loans(headers, logger):
                 acceptable_loan['score'] = round(scored_results['score'], 4)
                 acceptable_loan['max_investment_amount'] = \
                     scored_results['max_investment_amount']
+                acceptable_loan['min_probability_score'] = \
+                    scored_results['min_probability_score']
                 scored_loans.append(acceptable_loan)
         if scored_loans:
             results = sorted(
                 scored_loans,
-                key=itemgetter('score'),
+                key=itemgetter('grade', 'score'),
                 reverse=True
             )
     return results

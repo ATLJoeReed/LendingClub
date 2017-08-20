@@ -38,7 +38,7 @@ def runner(preview=True):
             logger.info("Not enough available cash...")
             continue
 
-        time.sleep(.500)
+        # time.sleep(.500)
 
         try:
             loans_owned = utils.get_loans_owned(headers, account_number)
@@ -46,7 +46,7 @@ def runner(preview=True):
             logger.error("Getting loans owned: {}".format(e))
             continue
 
-        time.sleep(.500)
+        # time.sleep(.500)
 
         try:
             loans = utils.get_loans(
@@ -74,10 +74,10 @@ def runner(preview=True):
             logger.info("Loan found: {}".format(loan))
             investment_amount = utils.get_investment_amount(
                 loan['grade'],
-                loan['term'],
                 loan['score'],
                 available_cash,
-                loan['max_investment_amount']
+                loan['max_investment_amount'],
+                loan['min_probability_score']
             )
             logger.info("Investment amount: ${}".format(investment_amount))
 
