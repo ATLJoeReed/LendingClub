@@ -17,11 +17,14 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
-def get_investment_amount(grade, score, available_cash, max_investment_amount, min_probability_score): # noqa
+def get_investment_amount(loan, available_cash):
     results = 0
     if available_cash < 50:
         return results
-    if grade in ['F', 'G']:
+    score = loan['score']
+    min_probability_score = loan['min_probability_score']
+    max_investment_amount = loan['max_investment_amount']
+    if loan['grade'] in ['F', 'G']:
         if score < .65:
             return results
         if score >= .65 and score < .80:

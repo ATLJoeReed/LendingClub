@@ -73,11 +73,8 @@ def runner(preview=True):
         for loan in new_loans:
             logger.info("Loan found: {}".format(loan))
             investment_amount = utils.get_investment_amount(
-                loan['grade'],
-                loan['score'],
-                available_cash,
-                loan['max_investment_amount'],
-                loan['min_probability_score']
+                loan,
+                available_cash
             )
             logger.info("Investment amount: ${}".format(investment_amount))
 

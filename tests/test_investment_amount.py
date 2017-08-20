@@ -3,80 +3,176 @@ import utils
 
 
 def test_get_investment_amount_1():
-    results = utils.get_investment_amount('F', .6499, 950, 150, .6500)
+    loan = {
+        'grade': 'F',
+        'score': .6499,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 950)
     assert results == 0
 
 
 def test_get_investment_amount_2():
-    results = utils.get_investment_amount('F', .6505, 950, 150, .6500)
+    loan = {
+        'grade': 'F',
+        'score': .6505,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 950)
     assert results == 50
 
 
 def test_get_investment_amount_3():
-    results = utils.get_investment_amount('G', .8125, 150, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .8125,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 150)
     assert results == 100
 
 
 def test_get_investment_amount_4():
-    results = utils.get_investment_amount('G', .9000, 150, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .9000,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 150)
     assert results == 150
 
 
 def test_get_investment_amount_5():
-    results = utils.get_investment_amount('G', .6505, 48, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .6505,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 48)
     assert results == 0
 
 
 def test_get_investment_amount_6():
-    results = utils.get_investment_amount('G', .801, 75, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .801,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 75)
     assert results == 75
 
 
 def test_get_investment_amount_7():
-    results = utils.get_investment_amount('G', .901, 56, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .901,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 56)
     assert results == 56
 
 
 def test_get_investment_amount_8():
-    results = utils.get_investment_amount('F', .649, 950, 150, .6500)
+    loan = {
+        'grade': 'F',
+        'score': .649,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 950)
     assert results == 0
 
 
 def test_get_investment_amount_9():
-    results = utils.get_investment_amount('F', .845, 49, 150, .6500)
+    loan = {
+        'grade': 'F',
+        'score': .845,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 49)
     assert results == 0
 
 
 def test_get_investment_amount_10():
-    results = utils.get_investment_amount('G', .845, 95, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .845,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 95)
     assert results == 95
 
 
 def test_get_investment_amount_11():
-    results = utils.get_investment_amount('G', .9, 145, 150, .6500)
+    loan = {
+        'grade': 'G',
+        'score': .900,
+        'min_probability_score': .6500,
+        'max_investment_amount': 150
+    }
+    results = utils.get_investment_amount(loan, 145)
     assert results == 145
 
 
 def test_get_investment_amount_12():
-    results = utils.get_investment_amount('A', .9799, 500, 50, .9800)
+    loan = {
+        'grade': 'A',
+        'score': .9799,
+        'min_probability_score': .9800,
+        'max_investment_amount': 50
+    }
+    results = utils.get_investment_amount(loan, 500)
     assert results == 0
 
 
 def test_get_investment_amount_13():
-    results = utils.get_investment_amount('A', .9999, 49, 50, .9800)
+    loan = {
+        'grade': 'A',
+        'score': .9999,
+        'min_probability_score': .9800,
+        'max_investment_amount': 50
+    }
+    results = utils.get_investment_amount(loan, 49)
     assert results == 0
 
 
 def test_get_investment_amount_14():
-    results = utils.get_investment_amount('A', .9999, 51, 50, .9800)
+    loan = {
+        'grade': 'A',
+        'score': .9999,
+        'min_probability_score': .9800,
+        'max_investment_amount': 50
+    }
+    results = utils.get_investment_amount(loan, 51)
     assert results == 50
 
 
 def test_get_investment_amount_15():
-    results = utils.get_investment_amount('B', .9499, 250, 50, .9500)
+    loan = {
+        'grade': 'B',
+        'score': .9499,
+        'min_probability_score': .9500,
+        'max_investment_amount': 50
+    }
+    results = utils.get_investment_amount(loan, 250)
     assert results == 0
 
 
 def test_get_investment_amount_16():
-    results = utils.get_investment_amount('B', .950, 250, 50, .9500)
+    loan = {
+        'grade': 'B',
+        'score': .950,
+        'min_probability_score': .9500,
+        'max_investment_amount': 50
+    }
+    results = utils.get_investment_amount(loan, 250)
     assert results == 50
