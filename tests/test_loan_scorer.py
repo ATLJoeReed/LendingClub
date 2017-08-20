@@ -178,6 +178,138 @@ def test_loan_scorer_B_60_3():
     assert round(results['score'], 10) == round(0.0, 10)
 
 
+def test_loan_scorer_C_36_1():
+    loan_details = {
+        'id': 103648530,
+        'term': 36,
+        'grade': 'C',
+        'annualInc': 50000.0,
+        'collections12MthsExMed': 0,
+        'dti': 16.54,
+        'ficoRangeLow': 680,
+        'inqLast6Mths': 1,
+        'installment': 302.12,
+        'loanAmount': 9000,
+        'openAcc': 11,
+        'pubRec': 0,
+        'totalAcc': 13,
+        'homeOwnership': 'RENT',
+        'isIncV': 'VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.73549110586747, 10)
+
+
+def test_loan_scorer_C_36_2():
+    loan_details = {
+        'id': 103754498,
+        'term': 36,
+        'grade': 'C',
+        'annualInc': 60000.0,
+        'collections12MthsExMed': 0,
+        'dti': 13.32,
+        'ficoRangeLow': 680,
+        'inqLast6Mths': 0,
+        'installment': 173.31,
+        'loanAmount': 5000,
+        'openAcc': 5,
+        'pubRec': 0,
+        'totalAcc': 17,
+        'homeOwnership': 'OWN',
+        'isIncV': 'SOURCE_VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.820926603236312, 10)
+
+
+def test_loan_scorer_C_36_3():
+    loan_details = {
+        'id': 103537578,
+        'term': 36,
+        'grade': 'C',
+        'annualInc': 73000.0,
+        'collections12MthsExMed': 0,
+        'dti': 12.05,
+        'ficoRangeLow': 675,
+        'inqLast6Mths': 0,
+        'installment': 241.70,
+        'loanAmount': 7200,
+        'openAcc': 7,
+        'pubRec': 1,
+        'totalAcc': 24,
+        'homeOwnership': 'MORTGAGE',
+        'isIncV': 'NOT_VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.863419298456295, 10)
+
+
+def test_loan_scorer_C_60_1():
+    loan_details = {
+        'id': 103991607,
+        'term': 60,
+        'grade': 'C',
+        'annualInc': 178500.0,
+        'collections12MthsExMed': 0,
+        'dti': 16.69,
+        'ficoRangeLow': 725,
+        'inqLast6Mths': 0,
+        'installment': 348.95,
+        'loanAmount': 15000,
+        'openAcc': 27,
+        'pubRec': 0,
+        'totalAcc': 63,
+        'homeOwnership': 'MORTGAGE',
+        'isIncV': 'SOURCE_VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.868770310315056, 10)
+
+
+def test_loan_scorer_C_60_2():
+    loan_details = {
+        'id': 103167243,
+        'term': 60,
+        'grade': 'C',
+        'annualInc': 55000.0,
+        'collections12MthsExMed': 0,
+        'dti': 13.68,
+        'ficoRangeLow': 690,
+        'inqLast6Mths': 0,
+        'installment': 442.5,
+        'loanAmount': 18200,
+        'openAcc': 9,
+        'pubRec': 1,
+        'totalAcc': 16,
+        'homeOwnership': 'RENT',
+        'isIncV': 'NOT_VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.706840286357261, 10)
+
+
+def test_loan_scorer_C_60_3():
+    loan_details = {
+        'id': 103618013,
+        'term': 60,
+        'grade': 'C',
+        'annualInc': 60000.0,
+        'collections12MthsExMed': 0,
+        'dti': 21.42,
+        'ficoRangeLow': 710,
+        'inqLast6Mths': 2,
+        'installment': 372.21,
+        'loanAmount': 16000,
+        'openAcc': 9,
+        'pubRec': 0,
+        'totalAcc': 27,
+        'homeOwnership': 'MORTGAGE',
+        'isIncV': 'NOT_VERIFIED'
+    }
+    results = utils.loan_scorer(loan_details)
+    assert round(results['score'], 10) == round(0.773734013380495, 10)
+
+
 def test_loan_scorer_D_36_1():
     loan_details = {
         'id': 103487929,
