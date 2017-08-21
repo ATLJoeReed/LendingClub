@@ -25,9 +25,9 @@ def get_investment_amount(loan, available_cash):
     min_probability_score = loan['min_probability_score']
     max_investment_amount = loan['max_investment_amount']
     if loan['grade'] in ['F', 'G']:
-        if score < .65:
+        if score < min_probability_score:
             return results
-        if score >= .65 and score < .80:
+        if score >= min_probability_score and score < .80:
             return 50
         if score >= .80 and score < .90:
             if available_cash >= 100:
@@ -72,12 +72,12 @@ def get_loans(headers, logger):
                 acceptable_loan['min_probability_score'] = \
                     scored_results['min_probability_score']
                 scored_loans.append(acceptable_loan)
-        if scored_loans:
-            results = sorted(
-                scored_loans,
-                key=itemgetter('grade', 'score'),
-                reverse=True
-            )
+    if scored_loans:
+        results = sorted(
+            scored_loans,
+            key=itemgetter('grade', 'score'),
+            reverse=True
+        )
     return results
 
 

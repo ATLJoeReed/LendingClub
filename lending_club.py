@@ -72,6 +72,9 @@ def runner(preview=True):
         payload['orders'] = []
         for loan in new_loans:
             logger.info("Loan found: {}".format(loan))
+            if available_cash < 50:
+                logger.info("You are out of cash...")
+                break
             investment_amount = utils.get_investment_amount(
                 loan,
                 available_cash
@@ -91,6 +94,7 @@ def runner(preview=True):
                 )
             else:
                 break
+
             available_cash -= investment_amount
 
         logger.info("Payload: {}".format(payload))
