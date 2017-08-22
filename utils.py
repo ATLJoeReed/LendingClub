@@ -84,10 +84,10 @@ def get_loans(headers, logger):
 def get_seconds_to_sleep():
     now = datetime.datetime.now()
     top_hour = now.replace(
-        hour=now.hour + 1,
-        minute=0,
-        second=2,
-        microsecond=500
+        hour=now.hour,
+        minute=59,
+        second=57,
+        microsecond=250
     )
     return (top_hour - now).seconds
 
