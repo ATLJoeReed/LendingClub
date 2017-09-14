@@ -1,9 +1,11 @@
 #!/usr/bin/python3.6
-import datetime
+from datetime import datetime
+from datetime import timedelta
 import logging
 from operator import itemgetter
 import math
 
+from pytz import timezone
 import requests
 
 from config import scores, settings
@@ -101,6 +103,36 @@ def get_loans_owned(headers, account_number):
     for note in notes:
         results.append(note['loanId'])
     return results
+
+
+def get_recent_loans(headers, account_number, minutes_since_loan):
+    results = []
+    pacific_time = datetime.now(timezone('US/Pacific'))
+    watch_time = \
+        pacific_time - timedelta(minutes=minutes_since_loan)
+    url = url_builder('loans_owned', account_number)
+    r = requests.get(url, headers=headers)
+    response = r.json()
+    notes = response.get('myNotes', [])
+    for note in notes:
+        order_date = ''.join(note.get('orderDate', None).rsplit(':', 1))
+        order_date = datetime.strptime(order_date, "%Y-%m-%dT%H:%M:%S.%f%z")
+        if order_date >= watch_time:
+            results.append(
+                {
+                    'loanId': note.get('loanId', None),
+                    'grade': note.get('grade', None),
+                    'orderDate': note.get('orderDate', None),
+                    'noteAmount': note.get('noteAmount', None)
+                }
+            )
+    return results
+
+
+def get_watcher_auth_token(account_number):
+    for account in settings.ACCOUNTS:
+        if account['account_number'] == account_number:
+            return account['authorization_token']
 
 
 def header_builder(authorization_token):

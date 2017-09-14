@@ -42,6 +42,23 @@ def runner(preview=True):
 
     print(loans_owned)
 
+    watcher_account_number = \
+        settings.ACCOUNT_WATCHER['watch_account_number']
+
+    watcher_auth_token = utils.get_watcher_auth_token(
+        watcher_account_number
+    )
+
+    watcher_headers = utils.header_builder(watcher_auth_token)
+
+    recent_watcher_loans = utils.get_recent_loans(
+        watcher_headers,
+        watcher_account_number,
+        800
+    )
+
+    print(recent_watcher_loans)
+
     logger.info("=========================END WATCHER RUN=========================") # noqa
 
 
