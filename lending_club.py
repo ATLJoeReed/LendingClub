@@ -4,6 +4,7 @@ import os
 import time
 
 from config import settings
+import account_watcher
 import utils
 
 
@@ -112,6 +113,9 @@ def runner(preview=True):
                 continue
 
             logger.info("Order results: {}".format(order_results))
+
+    time.sleep(5)
+    account_watcher.watch(preview, logger)
 
     logger.info("==========================END RUN==========================")
 
