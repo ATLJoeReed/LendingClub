@@ -120,8 +120,8 @@ def get_seconds_to_sleep():
     top_hour = now.replace(
         hour=now.hour,
         minute=59,
-        second=57,
-        microsecond=250
+        second=59,
+        microsecond=500
     )
     return (top_hour - now).seconds
 

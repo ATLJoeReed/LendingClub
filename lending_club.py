@@ -37,7 +37,7 @@ def runner(preview=True):
         logger.info("Available Cash Balance :${}".format(available_cash))
         if available_cash < 50:
             logger.info("Not enough available cash...")
-            time.sleep(1)
+            time.sleep(120)
             continue
 
         # time.sleep(.500)

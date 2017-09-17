@@ -50,7 +50,7 @@ def watch(preview, logger):
         recent_monitoring_loans = utils.get_recent_loans(
             monitoring_headers,
             monitoring_account_number,
-            2400
+            15
         )
     except Exception as e:
         logger.error("Getting recent loans: {}".format(e))
