@@ -20,6 +20,19 @@ def available_cash_getter(headers, account_number):
     return available_cash
 
 
+def build_acceptable_loan(loan, scored_results):
+    acceptable_loan = {}
+    acceptable_loan['id'] = loan['id']
+    acceptable_loan['term'] = loan['term']
+    acceptable_loan['grade'] = loan['grade']
+    acceptable_loan['score'] = round(scored_results['score'], 4)
+    acceptable_loan['max_investment_amount'] = \
+        scored_results['max_investment_amount']
+    acceptable_loan['min_probability_score'] = \
+        scored_results['min_probability_score']
+    return acceptable_loan
+
+
 def get_all_loans(headers, logger):
     url = url_builder('get_loans')
     try:
@@ -66,19 +79,6 @@ def get_investment_amount(loan, available_cash):
     return results
 
 
-def build_acceptable_loan(loan, scored_results):
-    acceptable_loan = {}
-    acceptable_loan['id'] = loan['id']
-    acceptable_loan['term'] = loan['term']
-    acceptable_loan['grade'] = loan['grade']
-    acceptable_loan['score'] = round(scored_results['score'], 4)
-    acceptable_loan['max_investment_amount'] = \
-        scored_results['max_investment_amount']
-    acceptable_loan['min_probability_score'] = \
-        scored_results['min_probability_score']
-    return acceptable_loan
-
-
 def get_loans(headers, logger):
     results = []
     scored_loans = []
@@ -98,17 +98,6 @@ def get_loans(headers, logger):
     return results
 
 
-def get_seconds_to_sleep():
-    now = datetime.datetime.now()
-    top_hour = now.replace(
-        hour=now.hour,
-        minute=59,
-        second=57,
-        microsecond=250
-    )
-    return (top_hour - now).seconds
-
-
 def get_loans_owned(headers, account_number):
     results = []
     url = url_builder('loans_owned', account_number)
@@ -118,6 +107,23 @@ def get_loans_owned(headers, account_number):
     for note in notes:
         results.append(note['loanId'])
     return results
+
+
+def get_monitoring_auth_token(account_number):
+    for account in settings.ACCOUNTS:
+        if account['account_number'] == account_number:
+            return account['authorization_token']
+
+
+def get_seconds_to_sleep():
+    now = datetime.datetime.now()
+    top_hour = now.replace(
+        hour=now.hour,
+        minute=59,
+        second=57,
+        microsecond=250
+    )
+    return (top_hour - now).seconds
 
 
 def get_matching_loan(headers, grade, term, loans_owned, logger):
@@ -156,12 +162,6 @@ def get_recent_loans(headers, account_number, minutes_since_loan):
                 }
             )
     return results
-
-
-def get_monitoring_auth_token(account_number):
-    for account in settings.ACCOUNTS:
-        if account['account_number'] == account_number:
-            return account['authorization_token']
 
 
 def header_builder(authorization_token):
