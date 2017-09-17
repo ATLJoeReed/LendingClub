@@ -4,6 +4,7 @@ from datetime import timedelta
 import logging
 from operator import itemgetter
 import math
+import random
 
 from pytz import timezone
 import requests
@@ -17,6 +18,19 @@ def available_cash_getter(headers, account_number):
     response = r.json()
     available_cash = response['availableCash']
     return available_cash
+
+
+def get_all_loans(headers, logger):
+    url = url_builder('get_loans')
+    try:
+        r = requests.get(url, headers=headers)
+    except Exception as e:
+        logger.error("Getting all loans: {}".format(e))
+        return []
+    response = r.json()
+    loans = response.get('loans', None)
+    logger.info("Total loans located: {}".format(len(loans)))
+    return loans
 
 
 def get_investment_amount(loan, available_cash):
@@ -52,27 +66,28 @@ def get_investment_amount(loan, available_cash):
     return results
 
 
+def build_acceptable_loan(loan, scored_results):
+    acceptable_loan = {}
+    acceptable_loan['id'] = loan['id']
+    acceptable_loan['term'] = loan['term']
+    acceptable_loan['grade'] = loan['grade']
+    acceptable_loan['score'] = round(scored_results['score'], 4)
+    acceptable_loan['max_investment_amount'] = \
+        scored_results['max_investment_amount']
+    acceptable_loan['min_probability_score'] = \
+        scored_results['min_probability_score']
+    return acceptable_loan
+
+
 def get_loans(headers, logger):
     results = []
     scored_loans = []
-    url = url_builder('get_loans')
-    r = requests.get(url, headers=headers)
-    response = r.json()
-    loans = response['loans']
-    logger.info("Total loans located: {}".format(len(loans)))
+    loans = get_all_loans(headers, logger)
     for loan in loans:
         if loan['grade'] in settings.LOAN_GRADES:
             scored_results = loan_scorer(loan)
             if scored_results['score'] >= scored_results['min_probability_score']: # noqa
-                acceptable_loan = {}
-                acceptable_loan['id'] = loan['id']
-                acceptable_loan['term'] = loan['term']
-                acceptable_loan['grade'] = loan['grade']
-                acceptable_loan['score'] = round(scored_results['score'], 4)
-                acceptable_loan['max_investment_amount'] = \
-                    scored_results['max_investment_amount']
-                acceptable_loan['min_probability_score'] = \
-                    scored_results['min_probability_score']
+                acceptable_loan = build_acceptable_loan(loan, scored_results)
                 scored_loans.append(acceptable_loan)
     if scored_loans:
         results = sorted(
@@ -105,6 +120,19 @@ def get_loans_owned(headers, account_number):
     return results
 
 
+def get_matching_loan(headers, grade, term, loans_owned, logger):
+    scored_loans = []
+    loans = get_all_loans(headers, logger)
+    for loan in loans:
+        if loan['grade'] == grade and loan['term'] == term:
+            scored_results = loan_scorer(loan)
+            if scored_results['score'] >= .4 and scored_results['score'] <= .6:
+                acceptable_loan = build_acceptable_loan(loan, scored_results)
+                scored_loans.append(acceptable_loan)
+    results = [l for l in scored_loans if l['id'] not in loans_owned]
+    return random.choice(results)
+
+
 def get_recent_loans(headers, account_number, minutes_since_loan):
     results = []
     pacific_time = datetime.now(timezone('US/Pacific'))
@@ -122,8 +150,9 @@ def get_recent_loans(headers, account_number, minutes_since_loan):
                 {
                     'loanId': note.get('loanId', None),
                     'grade': note.get('grade', None),
+                    'term': note.get('loanLength', None),
                     'orderDate': note.get('orderDate', None),
-                    'noteAmount': note.get('noteAmount', None)
+                    'noteAmount': note.get('noteAmount', None),
                 }
             )
     return results

@@ -40,8 +40,6 @@ def runner(preview=True):
     except Exception as e:
         logger.error("Getting loans owned: {}".format(e))
 
-    print(loans_owned)
-
     watcher_account_number = \
         settings.ACCOUNT_WATCHER['watch_account_number']
 
@@ -54,10 +52,40 @@ def runner(preview=True):
     recent_watcher_loans = utils.get_recent_loans(
         watcher_headers,
         watcher_account_number,
-        800
+        2400
     )
 
-    print(recent_watcher_loans)
+    payload = {}
+    payload['aid'] = account_number
+    payload['orders'] = []
+    for loan in recent_watcher_loans:
+        match_loan = utils.get_matching_loan(
+            headers,
+            loan['grade'],
+            loan['term'],
+            loans_owned,
+            logger
+        )
+
+        logger.info("Loan found: {}".format(match_loan))
+        if available_cash < 50:
+            logger.info("You are out of cash...")
+            break
+        investment_amount = loan['noteAmount']
+        logger.info("Investment amount: ${}".format(investment_amount))
+        if investment_amount:
+            payload['orders'].append(
+                {
+                    'loanId': match_loan['id'],
+                    'requestedAmount': investment_amount
+                }
+            )
+
+        available_cash -= investment_amount
+        loans_owned.append(match_loan['id'])
+
+    logger.info("Payload: {}".format(payload))
+    logger.info("Avaiable cash left: ${}".format(available_cash))
 
     logger.info("=========================END WATCHER RUN=========================") # noqa
 
