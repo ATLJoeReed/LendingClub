@@ -46,23 +46,31 @@ def watch(preview, logger):
 
     watcher_headers = utils.header_builder(watcher_auth_token)
 
-    recent_watcher_loans = utils.get_recent_loans(
-        watcher_headers,
-        watcher_account_number,
-        2400
-    )
+    try:
+        recent_watcher_loans = utils.get_recent_loans(
+            watcher_headers,
+            watcher_account_number,
+            2400
+        )
+    except Exception as e:
+        logger.error("Getting recent loans: {}".format(e))
+        return
 
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []
     for loan in recent_watcher_loans:
-        match_loan = utils.get_matching_loan(
-            headers,
-            loan['grade'],
-            loan['term'],
-            loans_owned,
-            logger
-        )
+        try:
+            match_loan = utils.get_matching_loan(
+                headers,
+                loan['grade'],
+                loan['term'],
+                loans_owned,
+                logger
+            )
+        except Exception as e:
+            logger.error("Getting match loan: {}".format(e))
+            continue
 
         logger.info("Loan found: {}".format(match_loan))
         if available_cash < 50:
