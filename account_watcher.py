@@ -37,19 +37,19 @@ def watch(preview, logger):
         logger.error("Getting loans owned: {}".format(e))
         return
 
-    watcher_account_number = \
-        settings.ACCOUNT_WATCHER['watch_account_number']
+    monitoring_account_number = \
+        settings.ACCOUNT_WATCHER['account_to_monitor']
 
-    watcher_auth_token = utils.get_watcher_auth_token(
-        watcher_account_number
+    monitoring_auth_token = utils.get_monitoring_auth_token(
+        monitoring_account_number
     )
 
-    watcher_headers = utils.header_builder(watcher_auth_token)
+    monitoring_headers = utils.header_builder(monitoring_auth_token)
 
     try:
-        recent_watcher_loans = utils.get_recent_loans(
-            watcher_headers,
-            watcher_account_number,
+        recent_monitoring_loans = utils.get_recent_loans(
+            monitoring_headers,
+            monitoring_account_number,
             2400
         )
     except Exception as e:
@@ -59,7 +59,7 @@ def watch(preview, logger):
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []
-    for loan in recent_watcher_loans:
+    for loan in recent_monitoring_loans:
         try:
             match_loan = utils.get_matching_loan(
                 headers,

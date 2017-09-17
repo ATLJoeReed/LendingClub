@@ -158,7 +158,7 @@ def get_recent_loans(headers, account_number, minutes_since_loan):
     return results
 
 
-def get_watcher_auth_token(account_number):
+def get_monitoring_auth_token(account_number):
     for account in settings.ACCOUNTS:
         if account['account_number'] == account_number:
             return account['authorization_token']

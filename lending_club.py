@@ -37,6 +37,7 @@ def runner(preview=True):
         logger.info("Available Cash Balance :${}".format(available_cash))
         if available_cash < 50:
             logger.info("Not enough available cash...")
+            time.sleep(1)
             continue
 
         # time.sleep(.500)
@@ -114,7 +115,7 @@ def runner(preview=True):
 
             logger.info("Order results: {}".format(order_results))
 
-    time.sleep(5)
+    time.sleep(1)
     account_watcher.watch(preview, logger)
 
     logger.info("==========================END RUN==========================")
