@@ -56,9 +56,14 @@ def watch(preview, logger):
         logger.error("Getting recent loans: {}".format(e))
         return
 
+    if not recent_monitoring_loans:
+        logger.info("No recent monitoring loans found...")
+        return
+
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []
+
     for loan in recent_monitoring_loans:
         try:
             match_loan = utils.get_matching_loan(
