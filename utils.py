@@ -1,6 +1,5 @@
 #!/usr/bin/python3.6
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
 from operator import itemgetter
 import math
@@ -116,7 +115,7 @@ def get_monitoring_auth_token(account_number):
 
 
 def get_seconds_to_sleep():
-    now = datetime.datetime.now()
+    now = datetime.now()
     top_hour = now.replace(
         hour=now.hour,
         minute=59,
