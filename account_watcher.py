@@ -78,10 +78,10 @@ def watch(preview, logger):
             continue
 
         logger.info("Loan found: {}".format(match_loan))
-        if available_cash < 50:
-            logger.info("You are out of cash...")
+        investment_amount = loan.get('noteAmount', 0)
+        if available_cash < investment_amount:
+            logger.info("You do not have enough cash to make the purchase...")
             break
-        investment_amount = loan['noteAmount']
         logger.info("Investment amount: ${}".format(investment_amount))
         if investment_amount:
             payload['orders'].append(
