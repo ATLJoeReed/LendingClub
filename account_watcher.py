@@ -77,6 +77,10 @@ def watch(preview, logger):
             logger.error("Getting match loan: {}".format(e))
             continue
 
+        if not match_loan:
+            logger.info("No matching loan found...")
+            return
+
         logger.info("Loan found: {}".format(match_loan))
         investment_amount = loan.get('noteAmount', 0)
         if available_cash < investment_amount:

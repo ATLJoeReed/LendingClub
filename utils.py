@@ -136,7 +136,10 @@ def get_matching_loan(headers, grade, term, loans_owned, logger):
                 acceptable_loan = build_acceptable_loan(loan, scored_results)
                 scored_loans.append(acceptable_loan)
     results = [l for l in scored_loans if l['id'] not in loans_owned]
-    return random.choice(results)
+    if results:
+        return random.choice(results)
+    else:
+        return None
 
 
 def get_recent_loans(headers, account_number, minutes_since_loan):
