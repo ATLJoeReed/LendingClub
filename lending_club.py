@@ -115,7 +115,8 @@ def runner(preview=True):
 
             logger.info("Order results: {}".format(order_results))
 
-    time.sleep(120)
+    if not preview:
+        time.sleep(1)
     account_watcher.watch(preview, logger)
 
     logger.info("==========================END RUN==========================")

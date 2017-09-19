@@ -70,8 +70,8 @@ def watch(preview, logger):
         try:
             match_loan = utils.get_matching_loan(
                 headers,
-                loan['grade'],
-                loan['term'],
+                loan.get('grade', None),
+                loan.get('term', None),
                 loans_owned,
                 logger
             )

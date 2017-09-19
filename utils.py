@@ -132,7 +132,8 @@ def get_matching_loan(headers, grade, term, loans_owned, logger):
     for loan in loans:
         if loan['grade'] == grade and loan['term'] == term:
             scored_results = loan_scorer(loan)
-            if scored_results['score'] >= .4 and scored_results['score'] <= .6:
+            loan_score = scored_results.get('score', 0)
+            if loan_score >= .3 and loan_score <= .65:
                 acceptable_loan = build_acceptable_loan(loan, scored_results)
                 scored_loans.append(acceptable_loan)
     results = [l for l in scored_loans if l['id'] not in loans_owned]
