@@ -60,6 +60,8 @@ def watch(preview, logger):
         logger.info("No recent monitoring loans found...")
         return
 
+    logger.info("Recent monitoring loans found: {}".format(recent_monitoring_loans)) # noqa
+
     payload = {}
     payload['aid'] = account_number
     payload['orders'] = []

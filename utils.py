@@ -145,8 +145,7 @@ def get_matching_loan(headers, grade, term, loans_owned, logger):
 def get_recent_loans(headers, account_number, minutes_since_loan):
     results = []
     pacific_time = datetime.now(timezone('US/Pacific'))
-    watch_time = \
-        pacific_time - timedelta(minutes=minutes_since_loan)
+    watch_time = pacific_time - timedelta(minutes=minutes_since_loan)
     url = url_builder('loans_owned', account_number)
     r = requests.get(url, headers=headers)
     response = r.json()
