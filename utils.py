@@ -32,6 +32,18 @@ def build_acceptable_loan(loan, scored_results):
     return acceptable_loan
 
 
+def get_account_to_monitor(account_number):
+    for account in settings.ACCOUNT_WATCHER:
+        if account['account_number'] == account_number:
+            return account['account_to_monitor']
+
+
+def get_account_watcher_auth_token(account_number):
+    for account in settings.ACCOUNT_WATCHER:
+        if account['account_number'] == account_number:
+            return account['authorization_token']
+
+
 def get_all_loans(headers, logger):
     url = url_builder('get_loans')
     try:

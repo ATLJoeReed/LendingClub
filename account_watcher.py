@@ -1,14 +1,11 @@
 #!/usr/bin/python3.6
-from config import settings
 import utils
 
 
-def watch(preview, logger):
+def watch(preview, account_number, logger):
     logger.info("=====START WATCHER RUN=====") # noqa
 
-    account_number = settings.ACCOUNT_WATCHER['account_number']
-    authorization_token = settings.ACCOUNT_WATCHER['authorization_token']
-
+    authorization_token = utils.get_account_watcher_auth_token(account_number)
     headers = utils.header_builder(authorization_token)
 
     logger.info(
@@ -37,9 +34,7 @@ def watch(preview, logger):
         logger.error("Getting loans owned: {}".format(e))
         return
 
-    monitoring_account_number = \
-        settings.ACCOUNT_WATCHER['account_to_monitor']
-
+    monitoring_account_number = utils.get_account_to_monitor(account_number)
     monitoring_auth_token = utils.get_monitoring_auth_token(
         monitoring_account_number
     )

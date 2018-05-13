@@ -117,7 +117,13 @@ def runner(preview=True):
 
     if not preview:
         time.sleep(120)
-    account_watcher.watch(preview, logger)
+
+    for watcher in settings.ACCOUNT_WATCHER:
+        account_watcher.watch(
+            preview,
+            watcher.get('account_number', None),
+            logger,
+        )
 
     logger.info("==========================END RUN==========================")
 
