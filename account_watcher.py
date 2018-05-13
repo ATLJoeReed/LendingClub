@@ -27,7 +27,7 @@ def watch(preview, logger):
 
     logger.info("Available Cash Balance :${}".format(available_cash))
 
-    if available_cash < 50:
+    if available_cash < 25:
         logger.info("Not enough available cash...")
         return
 

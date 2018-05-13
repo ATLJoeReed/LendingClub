@@ -47,35 +47,18 @@ def get_all_loans(headers, logger):
 
 def get_investment_amount(loan, available_cash):
     results = 0
-    if available_cash < 50:
+    if available_cash < 25:
         return results
     score = loan['score']
     min_probability_score = loan['min_probability_score']
     max_investment_amount = loan['max_investment_amount']
-    if loan['grade'] in ['F', 'G']:
-        if score < min_probability_score:
-            return results
-        if score >= min_probability_score and score < .80:
-            return 50
-        if score >= .80 and score < .90:
-            if available_cash >= 100:
-                return 100
-            else:
-                return available_cash
-        if score >= .90:
-            if available_cash >= 150:
-                return 150
-            else:
-                return available_cash
-    else:
-        if score >= min_probability_score:
-            if available_cash >= max_investment_amount:
-                return max_investment_amount
-            else:
-                return available_cash
+    if score >= min_probability_score:
+        if available_cash >= max_investment_amount:
+            return max_investment_amount
         else:
-            return results
-    return results
+            return available_cash
+    else:
+        return results
 
 
 def get_loans(headers, logger):
@@ -108,6 +91,23 @@ def get_loans_owned(headers, account_number):
     return results
 
 
+def get_matching_loan(headers, grade, term, loans_owned, logger):
+    scored_loans = []
+    loans = get_all_loans(headers, logger)
+    for loan in loans:
+        if loan['grade'] == grade and loan['term'] == term:
+            scored_results = loan_scorer(loan)
+            loan_score = scored_results.get('score', 0)
+            if loan_score >= .1 and loan_score <= .7:
+                acceptable_loan = build_acceptable_loan(loan, scored_results)
+                scored_loans.append(acceptable_loan)
+    results = [l for l in scored_loans if l['id'] not in loans_owned]
+    if results:
+        return random.choice(results)
+    else:
+        return None
+
+
 def get_monitoring_auth_token(account_number):
     for account in settings.ACCOUNTS:
         if account['account_number'] == account_number:
@@ -123,23 +123,6 @@ def get_seconds_to_sleep():
         microsecond=500
     )
     return (top_hour - now).seconds
-
-
-def get_matching_loan(headers, grade, term, loans_owned, logger):
-    scored_loans = []
-    loans = get_all_loans(headers, logger)
-    for loan in loans:
-        if loan['grade'] == grade and loan['term'] == term:
-            scored_results = loan_scorer(loan)
-            loan_score = scored_results.get('score', 0)
-            if loan_score >= .4 and loan_score <= .6:
-                acceptable_loan = build_acceptable_loan(loan, scored_results)
-                scored_loans.append(acceptable_loan)
-    results = [l for l in scored_loans if l['id'] not in loans_owned]
-    if results:
-        return random.choice(results)
-    else:
-        return None
 
 
 def get_recent_loans(headers, account_number, minutes_since_loan):

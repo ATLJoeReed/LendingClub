@@ -35,7 +35,7 @@ def runner(preview=True):
             continue
 
         logger.info("Available Cash Balance :${}".format(available_cash))
-        if available_cash < 50:
+        if available_cash < 25:
             logger.info("Not enough available cash...")
             time.sleep(1)
             continue
@@ -74,7 +74,7 @@ def runner(preview=True):
         payload['orders'] = []
         for loan in new_loans:
             logger.info("Loan found: {}".format(loan))
-            if available_cash < 50:
+            if available_cash < 25:
                 logger.info("You are out of cash...")
                 break
             investment_amount = utils.get_investment_amount(
@@ -85,7 +85,7 @@ def runner(preview=True):
 
             if investment_amount > loan['max_investment_amount']:
                 logger.error("Investment amount above maximum amount...")
-                investment_amount = 50
+                investment_amount = 25
 
             if investment_amount:
                 payload['orders'].append(
@@ -116,7 +116,7 @@ def runner(preview=True):
             logger.info("Order results: {}".format(order_results))
 
     if not preview:
-        time.sleep(1)
+        time.sleep(120)
     account_watcher.watch(preview, logger)
 
     logger.info("==========================END RUN==========================")

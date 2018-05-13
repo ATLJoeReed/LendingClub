@@ -21,7 +21,7 @@ def test_get_investment_amount_2():
         'max_investment_amount': 150
     }
     results = utils.get_investment_amount(loan, 950)
-    assert results == 50
+    assert results == 150
 
 
 def test_get_investment_amount_3():
@@ -32,7 +32,7 @@ def test_get_investment_amount_3():
         'max_investment_amount': 150
     }
     results = utils.get_investment_amount(loan, 150)
-    assert results == 100
+    assert results == 150
 
 
 def test_get_investment_amount_4():
@@ -54,7 +54,7 @@ def test_get_investment_amount_5():
         'max_investment_amount': 150
     }
     results = utils.get_investment_amount(loan, 48)
-    assert results == 0
+    assert results == 48
 
 
 def test_get_investment_amount_6():
@@ -98,7 +98,7 @@ def test_get_investment_amount_9():
         'max_investment_amount': 150
     }
     results = utils.get_investment_amount(loan, 49)
-    assert results == 0
+    assert results == 49
 
 
 def test_get_investment_amount_10():
@@ -142,7 +142,7 @@ def test_get_investment_amount_13():
         'max_investment_amount': 50
     }
     results = utils.get_investment_amount(loan, 49)
-    assert results == 0
+    assert results == 49
 
 
 def test_get_investment_amount_14():
