@@ -100,7 +100,7 @@ def runner(preview=True):
             available_cash -= investment_amount
 
         logger.info("Payload: {}".format(payload))
-        logger.info("Avaiable cash left: ${}".format(available_cash))
+        logger.info("Available cash left: ${}".format(available_cash))
 
         if not preview:
             try:
