@@ -132,7 +132,7 @@ def get_seconds_to_sleep():
         hour=now.hour,
         minute=59,
         second=59,
-        microsecond=500
+        microsecond=750
     )
     return (top_hour - now).seconds
 
