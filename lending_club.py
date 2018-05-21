@@ -48,7 +48,7 @@ def runner(preview=True):
             logger.error("Getting loans owned: {}".format(e))
             continue
 
-        # time.sleep(.500)
+        time.sleep(.300)
 
         try:
             loans = utils.get_loans(
